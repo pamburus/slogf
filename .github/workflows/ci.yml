@@ -27,10 +27,12 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: golangci-lint
+      - name: Lint .
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.54
+      - name: Lint other modules
+        run: go list -m -f '{{.Dir}}/...' | golangci-lint run
 
   unit-tests:
     name: Run unit tests
@@ -49,5 +51,13 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: go test
-        run: go test -race ./...
+      - name: Test
+        run: go list -m -f '{{.Dir}}/...' | xargs go test -race -coverprofile=cover.out -coverpkg=./...
+
+      - name: Collect coverage
+        run: go tool cover -html=cover.out -o cover.html
+
+      - name: Upload coverage to codecov.io
+        uses: codecov/codecov-action@v3
+        env: 
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
