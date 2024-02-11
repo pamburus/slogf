@@ -8,3 +8,6 @@ Package [slogf](https://github.com/pamburus/slogf) provides a bridge between the
 [ci]: https://github.com/pamburus/slogf/actions/workflows/ci.yml
 [cov-img]: https://codecov.io/gh/pamburus/slogf/graph/badge.svg?token=UNOQC3KJ7N
 [cov]: https://codecov.io/gh/pamburus/slogf
+
+## Performance
+* See [benchmark results](doc/benchmark/README.md) for details.

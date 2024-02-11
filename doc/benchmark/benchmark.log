@@ -1,0 +1,57 @@
+go test -bench=. -benchmem .
+goos: darwin
+goarch: arm64
+pkg: github.com/pamburus/slogf
+BenchmarkLogging/Simple/slog/WithCaller/Pass-10                   969754              1168 ns/op             568 B/op          6 allocs/op
+BenchmarkLogging/Simple/slog/WithCaller/Drop-10                175208986                 6.810 ns/op           0 B/op          0 allocs/op
+BenchmarkLogging/Simple/slog/WithoutCaller/Pass-10               2161390               555.3 ns/op             0 B/op          0 allocs/op
+BenchmarkLogging/Simple/slog/WithoutCaller/Drop-10             176379404                 6.854 ns/op           0 B/op          0 allocs/op
+BenchmarkLogging/Simple/slogf/WithCaller/Pass-10                 1000000              1077 ns/op             336 B/op          4 allocs/op
+BenchmarkLogging/Simple/slogf/WithCaller/Drop-10                99096438                11.85 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/Simple/slogf/WithoutCaller/Pass-10              1888774               634.5 ns/op           104 B/op          2 allocs/op
+BenchmarkLogging/Simple/slogf/WithoutCaller/Drop-10             94259649                11.88 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/Simple/logf/WithCaller/Pass-10                  1758824               684.7 ns/op           312 B/op          3 allocs/op
+BenchmarkLogging/Simple/logf/WithCaller/Drop-10                 42602667                27.72 ns/op           80 B/op          1 allocs/op
+BenchmarkLogging/Simple/logf/WithoutCaller/Pass-10               4593328               261.7 ns/op            80 B/op          1 allocs/op
+BenchmarkLogging/Simple/logf/WithoutCaller/Drop-10              43006192                27.48 ns/op           80 B/op          1 allocs/op
+BenchmarkLogging/Medium/slog/WithCaller/Pass-10                   820489              1423 ns/op             568 B/op          6 allocs/op
+BenchmarkLogging/Medium/slog/WithCaller/Drop-10                 90133796                13.03 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/Medium/slog/WithoutCaller/Pass-10               1672980               714.6 ns/op             0 B/op          0 allocs/op
+BenchmarkLogging/Medium/slog/WithoutCaller/Drop-10              90693808                13.09 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/Medium/slogf/WithCaller/Pass-10                  874303              1353 ns/op             704 B/op          4 allocs/op
+BenchmarkLogging/Medium/slogf/WithCaller/Drop-10                63070482                19.22 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/Medium/slogf/WithoutCaller/Pass-10              1284392               931.1 ns/op           472 B/op          2 allocs/op
+BenchmarkLogging/Medium/slogf/WithoutCaller/Drop-10             61704985                18.97 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/Medium/logf/WithCaller/Pass-10                  1423000               830.8 ns/op           456 B/op          3 allocs/op
+BenchmarkLogging/Medium/logf/WithCaller/Drop-10                 24662643                46.81 ns/op          224 B/op          1 allocs/op
+BenchmarkLogging/Medium/logf/WithoutCaller/Pass-10               3770335               320.5 ns/op           224 B/op          1 allocs/op
+BenchmarkLogging/Medium/logf/WithoutCaller/Drop-10              24503756                46.96 ns/op          224 B/op          1 allocs/op
+BenchmarkLogging/With/slog-10                                    2522523               474.0 ns/op           656 B/op         12 allocs/op
+BenchmarkLogging/With/slogf-10                                   3530118               334.8 ns/op           736 B/op          9 allocs/op
+BenchmarkLogging/With/logf-10                                   13827420                85.31 ns/op          320 B/op          2 allocs/op
+BenchmarkLogging/WithAndLog/slog/WithCaller/Pass-10               657952              1764 ns/op            1224 B/op         18 allocs/op
+BenchmarkLogging/WithAndLog/slog/WithCaller/Drop-10              2456103               487.0 ns/op           656 B/op         12 allocs/op
+BenchmarkLogging/WithAndLog/slog/WithoutCaller/Pass-10           1000000              1051 ns/op             656 B/op         12 allocs/op
+BenchmarkLogging/WithAndLog/slog/WithoutCaller/Drop-10           2471456               484.1 ns/op           656 B/op         12 allocs/op
+BenchmarkLogging/WithAndLog/slogf/WithCaller/Pass-10              744968              1565 ns/op            1216 B/op         13 allocs/op
+BenchmarkLogging/WithAndLog/slogf/WithCaller/Drop-10             3348180               356.7 ns/op           736 B/op          9 allocs/op
+BenchmarkLogging/WithAndLog/slogf/WithoutCaller/Pass-10           987694              1128 ns/op             984 B/op         11 allocs/op
+BenchmarkLogging/WithAndLog/slogf/WithoutCaller/Drop-10          3334022               356.1 ns/op           736 B/op          9 allocs/op
+BenchmarkLogging/WithAndLog/logf/WithCaller/Pass-10              1289241               926.1 ns/op           664 B/op          7 allocs/op
+BenchmarkLogging/WithAndLog/logf/WithCaller/Drop-10             13306485                88.00 ns/op          320 B/op          2 allocs/op
+BenchmarkLogging/WithAndLog/logf/WithoutCaller/Pass-10           2528084               475.5 ns/op           432 B/op          5 allocs/op
+BenchmarkLogging/WithAndLog/logf/WithoutCaller/Drop-10          13600674                86.01 ns/op          320 B/op          2 allocs/op
+BenchmarkLogging/LogAfterWith/slog/WithCaller/Pass-10             922065              1273 ns/op             568 B/op          6 allocs/op
+BenchmarkLogging/LogAfterWith/slog/WithCaller/Drop-10           273097065                4.403 ns/op           0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/slog/WithoutCaller/Pass-10         2115337               541.3 ns/op             0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/slog/WithoutCaller/Drop-10        269958561                4.422 ns/op           0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/slogf/WithCaller/Pass-10            990346              1132 ns/op             480 B/op          4 allocs/op
+BenchmarkLogging/LogAfterWith/slogf/WithCaller/Drop-10          100000000               11.10 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/slogf/WithoutCaller/Pass-10        1656027               723.3 ns/op           248 B/op          2 allocs/op
+BenchmarkLogging/LogAfterWith/slogf/WithoutCaller/Drop-10       100000000               11.10 ns/op            0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/logf/WithCaller/Pass-10            1649985               727.8 ns/op           232 B/op          2 allocs/op
+BenchmarkLogging/LogAfterWith/logf/WithCaller/Drop-10           463109470                2.557 ns/op           0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/logf/WithoutCaller/Pass-10         6132507               195.5 ns/op             0 B/op          0 allocs/op
+BenchmarkLogging/LogAfterWith/logf/WithoutCaller/Drop-10        470273874                2.552 ns/op           0 B/op          0 allocs/op
+PASS
+ok      github.com/pamburus/slogf       80.771s
