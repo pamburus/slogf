@@ -1,4 +1,4 @@
-package slogf_test
+package benchmark_test
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/pamburus/slogf"
+	"github.com/pamburus/slogx"
 	"github.com/ssgreg/logf"
 )
 
@@ -44,6 +45,15 @@ func BenchmarkLogging(b *testing.B) {
 				b.StopTimer()
 			})
 		})
+		b.Run("slogf+x", func(b *testing.B) {
+			benchSlogfX(b, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
+				}
+				b.StopTimer()
+			})
+		})
 		b.Run("logf", func(b *testing.B) {
 			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
 				b.ResetTimer()
@@ -54,50 +64,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 	})
-	b.Run("Medium", func(b *testing.B) {
-		b.Run("slog", func(b *testing.B) {
-			benchSlog(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
-				logger = logger.With(
-					slog.String("a", "a1"),
-					slog.Int("b", 42),
-					slog.String("x", "x1"),
-				)
-				b.ResetTimer()
-				for i := 0; i < b.N; i++ {
-					logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("c", "d"), slog.Int("e", 10), slog.String("f", "g"))
-				}
-				b.StopTimer()
-			})
-		})
-		b.Run("slogf", func(b *testing.B) {
-			benchSlogf(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
-				logger = logger.With(
-					slog.String("a", "a1"),
-					slog.Int("b", 42),
-					slog.String("x", "x1"),
-				)
-				b.ResetTimer()
-				for i := 0; i < b.N; i++ {
-					logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("c", "d"), slog.Int("e", 10), slog.String("f", "g"))
-				}
-			})
-		})
-		b.Run("logf", func(b *testing.B) {
-			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
-				logger = logger.With(
-					logf.String("a", "a1"),
-					logf.Int("b", 42),
-					logf.String("x", "x1"),
-				)
-				b.ResetTimer()
-				for i := 0; i < b.N; i++ {
-					logger.Info("test", logf.String("c", "d"), logf.Int("e", 10), logf.String("f", "g"))
-				}
-				b.StopTimer()
-			})
-		})
-	})
-	b.Run("With", func(b *testing.B) {
+	b.Run("With3x", func(b *testing.B) {
 		b.Run("slog", func(b *testing.B) {
 			benchSlogLevel(b, slog.LevelDebug, false, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
 				b.ResetTimer()
@@ -124,6 +91,19 @@ func BenchmarkLogging(b *testing.B) {
 				b.StopTimer()
 			})
 		})
+		b.Run("slogf+x", func(b *testing.B) {
+			benchSlogfXLevel(b, logf.LevelDebug, false, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.With(
+						slog.String("a", "a1"),
+						slog.Int("b", 42),
+						slog.String("x", "x1"),
+					)
+				}
+				b.StopTimer()
+			})
+		})
 		b.Run("logf", func(b *testing.B) {
 			benchLogfLevel(b, logf.LevelDebug, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
 				b.ResetTimer()
@@ -138,7 +118,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 	})
-	b.Run("WithAndLog", func(b *testing.B) {
+	b.Run("WithAndLog1x", func(b *testing.B) {
 		b.Run("slog", func(b *testing.B) {
 			benchSlog(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
 				b.ResetTimer()
@@ -155,6 +135,20 @@ func BenchmarkLogging(b *testing.B) {
 		})
 		b.Run("slogf", func(b *testing.B) {
 			benchSlogf(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger := logger.With(
+						slog.String("a", "a1"),
+						slog.Int("b", 42),
+						slog.String("x", "x1"),
+					)
+					logger.LogAttrs(ctx, slog.LevelInfo, "test")
+				}
+				b.StopTimer()
+			})
+		})
+		b.Run("slogf+x", func(b *testing.B) {
+			benchSlogfX(b, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger := logger.With(
@@ -182,7 +176,73 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 	})
-	b.Run("LogAfterWith", func(b *testing.B) {
+	b.Run("WithAndLog3x", func(b *testing.B) {
+		b.Run("slog", func(b *testing.B) {
+			benchSlog(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger := logger.With(
+						slog.String("a", "a1"),
+						slog.Int("b", 42),
+						slog.String("x", "x1"),
+					)
+					logger.LogAttrs(ctx, slog.LevelInfo, "m1")
+					logger.LogAttrs(ctx, slog.LevelInfo, "m2")
+					logger.LogAttrs(ctx, slog.LevelInfo, "m3")
+				}
+				b.StopTimer()
+			})
+		})
+		b.Run("slogf", func(b *testing.B) {
+			benchSlogf(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger := logger.With(
+						slog.String("a", "a1"),
+						slog.Int("b", 42),
+						slog.String("x", "x1"),
+					)
+					logger.LogAttrs(ctx, slog.LevelInfo, "m1")
+					logger.LogAttrs(ctx, slog.LevelInfo, "m2")
+					logger.LogAttrs(ctx, slog.LevelInfo, "m3")
+				}
+				b.StopTimer()
+			})
+		})
+		b.Run("slogf+x", func(b *testing.B) {
+			benchSlogfX(b, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger := logger.With(
+						slog.String("a", "a1"),
+						slog.Int("b", 42),
+						slog.String("x", "x1"),
+					)
+					logger.LogAttrs(ctx, slog.LevelInfo, "m1")
+					logger.LogAttrs(ctx, slog.LevelInfo, "m2")
+					logger.LogAttrs(ctx, slog.LevelInfo, "m3")
+				}
+				b.StopTimer()
+			})
+		})
+		b.Run("logf", func(b *testing.B) {
+			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger := logger.With(
+						logf.String("a", "a1"),
+						logf.Int("b", 42),
+						logf.String("x", "x1"),
+					)
+					logger.Info("m1")
+					logger.Info("m2")
+					logger.Info("m3")
+				}
+				b.StopTimer()
+			})
+		})
+	})
+	b.Run("LogAfterWith3x0", func(b *testing.B) {
 		b.Run("slog", func(b *testing.B) {
 			benchSlog(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
 				logger = logger.With(
@@ -200,6 +260,20 @@ func BenchmarkLogging(b *testing.B) {
 		b.Run("slogf", func(b *testing.B) {
 			benchSlogf(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
 				logger = logger.With(
+					slog.String("a", "a1"),
+					slog.Int("b", 42),
+					slog.String("x", "x1"),
+				)
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.LogAttrs(ctx, slog.LevelInfo, "test")
+				}
+				b.StopTimer()
+			})
+		})
+		b.Run("slogf+x", func(b *testing.B) {
+			benchSlogfX(b, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+				logger = logger.WithLongTerm(
 					slog.String("a", "a1"),
 					slog.Int("b", 42),
 					slog.String("x", "x1"),
@@ -221,6 +295,62 @@ func BenchmarkLogging(b *testing.B) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger.Info("test")
+				}
+				b.StopTimer()
+			})
+		})
+	})
+	b.Run("LogAfterWith3x3", func(b *testing.B) {
+		b.Run("slog", func(b *testing.B) {
+			benchSlog(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+				logger = logger.With(
+					slog.String("a", "a1"),
+					slog.Int("b", 42),
+					slog.String("x", "x1"),
+				)
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("c", "d"), slog.Int("e", 10), slog.String("f", "g"))
+				}
+				b.StopTimer()
+			})
+		})
+		b.Run("slogf", func(b *testing.B) {
+			benchSlogf(b, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+				logger = logger.With(
+					slog.String("a", "a1"),
+					slog.Int("b", 42),
+					slog.String("x", "x1"),
+				)
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("c", "d"), slog.Int("e", 10), slog.String("f", "g"))
+				}
+			})
+		})
+		b.Run("slogf+x", func(b *testing.B) {
+			benchSlogfX(b, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+				logger = logger.WithLongTerm(
+					slog.String("a", "a1"),
+					slog.Int("b", 42),
+					slog.String("x", "x1"),
+				)
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("c", "d"), slog.Int("e", 10), slog.String("f", "g"))
+				}
+			})
+		})
+		b.Run("logf", func(b *testing.B) {
+			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+				logger = logger.With(
+					logf.String("a", "a1"),
+					logf.Int("b", 42),
+					logf.String("x", "x1"),
+				)
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					logger.Info("test", logf.String("c", "d"), logf.Int("e", 10), logf.String("f", "g"))
 				}
 				b.StopTimer()
 			})
@@ -250,6 +380,28 @@ func benchSlogf(b *testing.B, f func(context.Context, *testing.B, *slog.Logger))
 	})
 }
 
+func benchSlogfX(b *testing.B, f func(context.Context, *testing.B, *slogx.Logger)) {
+	test := func(b *testing.B, withCaller bool, f func(context.Context, *testing.B, *slogx.Logger)) {
+		b.Run("Pass", func(b *testing.B) {
+			benchSlogfXLevel(b, logf.LevelDebug, withCaller, f)
+		})
+		b.Run("Drop", func(b *testing.B) {
+			benchSlogfXLevel(b, logf.LevelWarn, withCaller, f)
+		})
+	}
+
+	b.Run("WithCaller", func(b *testing.B) {
+		test(b, true, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+			f(ctx, b, logger.WithSource(true))
+		})
+	})
+	b.Run("WithoutCaller", func(b *testing.B) {
+		test(b, false, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+			f(ctx, b, logger.WithSource(false))
+		})
+	})
+}
+
 func benchSlogfLevel(b *testing.B, level logf.Level, withCaller bool, f func(context.Context, *testing.B, *slog.Logger)) {
 	handler := slogf.NewHandler()
 	appender := logf.NewWriteAppender(io.Discard, logf.NewJSONEncoder(logf.JSONEncoderConfig{
@@ -268,7 +420,30 @@ func benchSlogfLevel(b *testing.B, level logf.Level, withCaller bool, f func(con
 	}
 
 	ctx := logf.NewContext(context.Background(), logfLogger)
-	logger := slog.New(handler.WithGroup("").WithAttrs(nil))
+	logger := slog.New(handler)
+	f(ctx, b, logger)
+	_ = appender.Flush()
+}
+
+func benchSlogfXLevel(b *testing.B, level logf.Level, withCaller bool, f func(context.Context, *testing.B, *slogx.Logger)) {
+	handler := slogf.NewHandler()
+	appender := logf.NewWriteAppender(io.Discard, logf.NewJSONEncoder(logf.JSONEncoderConfig{
+		EncodeDuration:     logf.NanoDurationEncoder,
+		EncodeTime:         logf.RFC3339NanoTimeEncoder,
+		DisableFieldCaller: true,
+	}))
+
+	logfLogger := logf.NewLogger(
+		level,
+		logf.NewUnbufferedEntryWriter(appender),
+	)
+
+	if withCaller {
+		logfLogger = logfLogger.WithCaller()
+	}
+
+	ctx := logf.NewContext(context.Background(), logfLogger)
+	logger := slogx.New(handler)
 	f(ctx, b, logger)
 	_ = appender.Flush()
 }
