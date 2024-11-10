@@ -6,13 +6,14 @@ import (
 	"log/slog"
 	"testing"
 
+	"github.com/ssgreg/logf"
+
 	"github.com/pamburus/slogf"
 	"github.com/pamburus/slogx"
-	"github.com/ssgreg/logf"
 )
 
 func BenchmarkAtLevel(b *testing.B) {
-	benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+	benchLogf(b, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 		b.ResetTimer()
 		counter := 0
 		for i := 0; i < b.N; i++ {
@@ -55,7 +56,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("logf", func(b *testing.B) {
-			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+			benchLogf(b, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger.Info("test", logf.String("key", "value"))
@@ -66,7 +67,7 @@ func BenchmarkLogging(b *testing.B) {
 	})
 	b.Run("With3x", func(b *testing.B) {
 		b.Run("slog", func(b *testing.B) {
-			benchSlogLevel(b, slog.LevelDebug, false, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+			benchSlogLevel(b, slog.LevelDebug, false, func(_ context.Context, b *testing.B, logger *slog.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger.With(
@@ -79,7 +80,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("slogf", func(b *testing.B) {
-			benchSlogfLevel(b, logf.LevelDebug, false, func(ctx context.Context, b *testing.B, logger *slog.Logger) {
+			benchSlogfLevel(b, logf.LevelDebug, false, func(_ context.Context, b *testing.B, logger *slog.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger.With(
@@ -92,7 +93,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("slogf+x", func(b *testing.B) {
-			benchSlogfXLevel(b, logf.LevelDebug, false, func(ctx context.Context, b *testing.B, logger *slogx.Logger) {
+			benchSlogfXLevel(b, logf.LevelDebug, false, func(_ context.Context, b *testing.B, logger *slogx.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger.With(
@@ -105,7 +106,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("logf", func(b *testing.B) {
-			benchLogfLevel(b, logf.LevelDebug, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+			benchLogfLevel(b, logf.LevelDebug, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger.With(
@@ -162,7 +163,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("logf", func(b *testing.B) {
-			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+			benchLogf(b, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger := logger.With(
@@ -226,7 +227,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("logf", func(b *testing.B) {
-			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+			benchLogf(b, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 				b.ResetTimer()
 				for i := 0; i < b.N; i++ {
 					logger := logger.With(
@@ -286,7 +287,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("logf", func(b *testing.B) {
-			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+			benchLogf(b, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 				logger = logger.With(
 					logf.String("a", "a1"),
 					logf.Int("b", 42),
@@ -342,7 +343,7 @@ func BenchmarkLogging(b *testing.B) {
 			})
 		})
 		b.Run("logf", func(b *testing.B) {
-			benchLogf(b, func(ctx context.Context, b *testing.B, logger *logf.Logger) {
+			benchLogf(b, func(_ context.Context, b *testing.B, logger *logf.Logger) {
 				logger = logger.With(
 					logf.String("a", "a1"),
 					logf.Int("b", 42),
