@@ -88,7 +88,12 @@ func TestHandler(tt *testing.T) {
 			lineTag: ThisLine(),
 			name:    "Mix1",
 			log: func(ctx context.Context, logger *slog.Logger) {
-				logger.WithGroup("g1").With(slog.Bool("b", true)).WithGroup("g2").With(slog.Int("c", 43)).LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
+				logger.
+					WithGroup("g1").
+					With(slog.Bool("b", true)).
+					WithGroup("g2").
+					With(slog.Int("c", 43)).
+					LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"b":true,"g2":{"c":43,"key":"value"}}}`},
 		},
@@ -96,7 +101,13 @@ func TestHandler(tt *testing.T) {
 			lineTag: ThisLine(),
 			name:    "Mix2",
 			log: func(ctx context.Context, logger *slog.Logger) {
-				logger.With(slog.Float64("f", 30)).WithGroup("g1").With(slog.Bool("b", true)).WithGroup("g2").With(slog.Int("c", 43)).LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
+				logger.
+					With(slog.Float64("f", 30)).
+					WithGroup("g1").
+					With(slog.Bool("b", true)).
+					WithGroup("g2").
+					With(slog.Int("c", 43)).
+					LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","f":30,"g1":{"b":true,"g2":{"c":43,"key":"value"}}}`},
 		},
@@ -247,6 +258,7 @@ func testSlogf(f func(context.Context, *slog.Logger)) func(io.Writer) {
 
 		logger := slog.New(handler.WithGroup("").WithAttrs(nil))
 		f(ctx, logger)
+
 		err := appender.Flush()
 		if err != nil {
 			panic(err)
@@ -291,6 +303,7 @@ func testLogf(f func(*logf.Logger)) func(io.Writer) {
 		)
 
 		f(logger)
+
 		err := appender.Flush()
 		if err != nil {
 			panic(err)
@@ -310,6 +323,4 @@ func (v testValuer) LogValue() slog.Value {
 
 // ---
 
-var (
-	_ slog.LogValuer = testValuer{}
-)
+var _ slog.LogValuer = testValuer{}
