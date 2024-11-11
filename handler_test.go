@@ -10,15 +10,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ssgreg/logf"
+
 	. "github.com/pamburus/go-tst/tst"
 	"github.com/pamburus/slogf"
-	"github.com/ssgreg/logf"
 )
 
 func TestHandler(tt *testing.T) {
 	t := New(tt)
 
 	type test struct {
+		lineTag  LineTag
 		name     string
 		log      func(context.Context, *slog.Logger)
 		expected []string
@@ -26,14 +28,16 @@ func TestHandler(tt *testing.T) {
 
 	tests := []test{
 		{
-			name: "Simple",
+			lineTag: ThisLine(),
+			name:    "Simple",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","key":"value"}`},
 		},
 		{
-			name: "With",
+			lineTag: ThisLine(),
+			name:    "With",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger = logger.With(
 					slog.String("a", "a1"),
@@ -49,126 +53,144 @@ func TestHandler(tt *testing.T) {
 			},
 		},
 		{
-			name: "WithGroup",
+			lineTag: ThisLine(),
+			name:    "WithGroup",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("g1").LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"key":"value"}}`},
 		},
 		{
-			name: "WithGroup:x2",
+			lineTag: ThisLine(),
+			name:    "WithGroup:x2",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("g1").WithGroup("g2").LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"g2":{"key":"value"}}}`},
 		},
 		{
-			name: "WithGroup:x3:0:1",
+			lineTag: ThisLine(),
+			name:    "WithGroup:x3:0:1",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("g1").WithGroup("g2").WithGroup("g3").With(slog.Int("x", 42)).LogAttrs(ctx, slog.LevelInfo, "test")
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"g2":{"g3":{"x":42}}}}`},
 		},
 		{
-			name: "WithGroup:x2:0",
+			lineTag: ThisLine(),
+			name:    "WithGroup:x2:0",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("g1").WithGroup("g2").LogAttrs(ctx, slog.LevelInfo, "test")
 			},
 			expected: []string{`{"level":"info","msg":"test"}`},
 		},
 		{
-			name: "Mix1",
+			lineTag: ThisLine(),
+			name:    "Mix1",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("g1").With(slog.Bool("b", true)).WithGroup("g2").With(slog.Int("c", 43)).LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"b":true,"g2":{"c":43,"key":"value"}}}`},
 		},
 		{
-			name: "Mix2",
+			lineTag: ThisLine(),
+			name:    "Mix2",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.With(slog.Float64("f", 30)).WithGroup("g1").With(slog.Bool("b", true)).WithGroup("g2").With(slog.Int("c", 43)).LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","f":30,"g1":{"b":true,"g2":{"c":43,"key":"value"}}}`},
 		},
 		{
-			name: "Mix3",
+			lineTag: ThisLine(),
+			name:    "Mix3",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("g1").With(slog.Bool("b", true)).WithGroup("g2").LogAttrs(ctx, slog.LevelInfo, "test")
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"b":true}}`},
 		},
 		{
-			name: "LevelDebug",
+			lineTag: ThisLine(),
+			name:    "LevelDebug",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelDebug, "test")
 			},
 			expected: []string{`{"level":"debug","msg":"test"}`},
 		},
 		{
-			name: "LevelWarning",
+			lineTag: ThisLine(),
+			name:    "LevelWarning",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelWarn, "test")
 			},
 			expected: []string{`{"level":"warn","msg":"test"}`},
 		},
 		{
-			name: "LevelError",
+			lineTag: ThisLine(),
+			name:    "LevelError",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelError, "test")
 			},
 			expected: []string{`{"level":"error","msg":"test"}`},
 		},
 		{
-			name: "EmptyAttrs",
+			lineTag: ThisLine(),
+			name:    "EmptyAttrs",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Attr{})
 			},
 			expected: []string{`{"level":"info","msg":"test"}`},
 		},
 		{
-			name: "EmptyGroup",
+			lineTag: ThisLine(),
+			name:    "EmptyGroup",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.WithGroup("").LogAttrs(ctx, slog.LevelInfo, "test", slog.String("key", "value"))
 			},
 			expected: []string{`{"level":"info","msg":"test","key":"value"}`},
 		},
 		{
-			name: "ValueDuration",
+			lineTag: ThisLine(),
+			name:    "ValueDuration",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Duration("key", time.Second))
 			},
 			expected: []string{`{"level":"info","msg":"test","key":1000000000}`},
 		},
 		{
-			name: "ValueTime",
+			lineTag: ThisLine(),
+			name:    "ValueTime",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Time("key", time.Date(2020, 1, 2, 3, 4, 5, 6, time.UTC)))
 			},
 			expected: []string{`{"level":"info","msg":"test","key":"2020-01-02T03:04:05.000000006Z"}`},
 		},
 		{
-			name: "ValueUint",
+			lineTag: ThisLine(),
+			name:    "ValueUint",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Uint64("key", 42))
 			},
 			expected: []string{`{"level":"info","msg":"test","key":42}`},
 		},
 		{
-			name: "ValueGroup",
+			lineTag: ThisLine(),
+			name:    "ValueGroup",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Group("g1", slog.Uint64("key", 42)))
 			},
 			expected: []string{`{"level":"info","msg":"test","g1":{"key":42}}`},
 		},
 		{
-			name: "ValueAny",
+			lineTag: ThisLine(),
+			name:    "ValueAny",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Any("e", errors.New("err")))
 			},
 			expected: []string{`{"level":"info","msg":"test","e":"err"}`},
 		},
 		{
-			name: "ValueValuer",
+			lineTag: ThisLine(),
+			name:    "ValueValuer",
 			log: func(ctx context.Context, logger *slog.Logger) {
 				logger.LogAttrs(ctx, slog.LevelInfo, "test", slog.Any("v", testValuer{42}))
 			},
@@ -179,9 +201,11 @@ func TestHandler(tt *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t Test) {
 			t.Run("slog", func(t Test) {
+				t.AddLineTags(test.lineTag)
 				t.Expect(testLog(testSlog(test.log))).To(Equal(test.expected))
 			})
 			t.Run("slogf", func(t Test) {
+				t.AddLineTags(test.lineTag)
 				t.Expect(testLog(testSlogf(test.log))).To(Equal(test.expected))
 			})
 		})
@@ -189,7 +213,7 @@ func TestHandler(tt *testing.T) {
 
 	t.Run("WithLogger", func(t Test) {
 		t.Expect(
-			testLog(testLogf(func(ctx context.Context, logfLogger *logf.Logger) {
+			testLog(testLogf(func(logfLogger *logf.Logger) {
 				logger := slog.New(slogf.NewHandler().WithLogger(logfLogger))
 				logger.Info("test", slog.String("key", "value"))
 			})),
@@ -253,7 +277,7 @@ func testSlog(f func(context.Context, *slog.Logger)) func(io.Writer) {
 	}
 }
 
-func testLogf(f func(context.Context, *logf.Logger)) func(io.Writer) {
+func testLogf(f func(*logf.Logger)) func(io.Writer) {
 	return func(writer io.Writer) {
 		appender := logf.NewWriteAppender(writer, logf.NewJSONEncoder(logf.JSONEncoderConfig{
 			DisableFieldTime: true,
@@ -266,7 +290,7 @@ func testLogf(f func(context.Context, *logf.Logger)) func(io.Writer) {
 			logf.NewUnbufferedEntryWriter(appender),
 		)
 
-		f(context.Background(), logger)
+		f(logger)
 		err := appender.Flush()
 		if err != nil {
 			panic(err)

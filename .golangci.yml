@@ -12,13 +12,9 @@ linters-settings:
   gocyclo:
     min-complexity: 32
   goimports:
-    local-prefixes: git.acronis.com
-  govet:
-    check-shadowing: false
+    local-prefixes: github.com/pamburus
   lll:
     line-length: 140
-  maligned:
-    suggest-new: true
   nolintlint:
     allow-unused: false # report any unused nolint directives
     require-explanation: true # require an explanation for nolint directives
@@ -30,9 +26,9 @@ linters:
   disable-all: true
   enable:
     - asciicheck
+    - copyloopvar
     - dupl
     - errcheck
-    - exportloopref
     - gocritic
     - gocyclo
     - godot
@@ -53,8 +49,6 @@ linters:
     - unconvert
     - unparam
     - unused
-    - vet
-    - vetshadow
     - whitespace
 
 issues:
@@ -62,27 +56,7 @@ issues:
   exclude-use-default: false
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude-rules:
-    - path: _test\.go
-      linters:
-        - dupl
-        - gosec
-        - unparam
-        - nlreturn
-    - path: _test\.go
+    - path: '_test\.go$'
       text: '^dot-imports:'
       linters:
         - revive
-    - text: ^G302|^G304|^G601
-      linters:
-        - gosec
-    - text: ^ST1000
-      linters:
-        - stylecheck
-    - text: ^singleCaseSwitch|^regexpMust
-      linters:
-        - gocritic
-
-# golangci.com configuration
-# https://github.com/golangci/golangci/wiki/Configuration
-service:
-  golangci-lint-version: 1.48.x # use the fixed version to not introduce new linters unexpectedly

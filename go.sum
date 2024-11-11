@@ -4,8 +4,8 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/pamburus/go-tst v0.2.0 h1:C6C0l6N/DXeGfX9vUNMDvko3i7ApUkundDUQK3bSKP4=
-github.com/pamburus/go-tst v0.2.0/go.mod h1:Jbmc83QXCwwfX4E2HhZ8n7tVM8tHbs6RhIl1CdayMls=
+github.com/pamburus/go-tst v0.6.0 h1:WHFO70QBYD/TWNNGGqNrJNZLcgRmhFMbq6J3Nc+fTxQ=
+github.com/pamburus/go-tst v0.6.0/go.mod h1:P35nV/vy/BUCDQSfqyQnFp4YsAdIezb18l9o7DvSB9E=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/ssgreg/logf v1.4.2 h1:J5qO5lVhFuHboQjYyTNt+0HlQifAYaLHgZLBxpDNIQQ=
