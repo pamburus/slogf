@@ -26,6 +26,10 @@ ifndef modules
 modules := $(filter-out $(aux-modules),$(all-modules))
 endif
 
+# Modules with no coverage measurement
+no-cov-modules += test/benchmark
+cov-modules := $(filter-out $(no-cov-modules),$(modules))
+
 # Tools
 go-test := go test
 go-tool-cover := go tool cover
@@ -78,7 +82,7 @@ test@/.:
 
 ## Show coverage
 .PHONY: coverage
-coverage: $(modules:%=coverage@/%)
+coverage: $(cov-modules:%=coverage@/%)
 
 # Show coverage for a module
 .PHONY: coverage@/%
