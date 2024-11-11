@@ -71,13 +71,13 @@ func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 			fields = append(fields, h.fields...)
 			fields = collectAttrs(fields)
 		} else {
-			g := groupEncoder{h, 0, nil}
+			enc := groupEncoder{h, 0, nil}
 			fields = make([]logf.Field, 0, record.NumAttrs()+h.groups[0].i+1)
 			fields = append(fields, h.fields[:h.groups[0].i]...)
-			fields = append(fields, logf.Object(h.groups[0].name, &g))
+			fields = append(fields, logf.Object(h.groups[0].name, &enc))
 			i := len(fields)
 			fields = collectAttrs(fields)
-			g.suffix = fields[i:]
+			enc.suffix = fields[i:]
 			fields = fields[:i]
 		}
 	}
@@ -130,6 +130,7 @@ func (h *Handler) fork() *Handler {
 func (h *Handler) groupAttrRange(i int) (int, int) {
 	begin := h.groups[i].i
 	end := len(h.fields)
+
 	if i+1 < len(h.groups) {
 		end = h.groups[i+1].i
 	}
@@ -174,6 +175,4 @@ func (g *groupEncoder) EncodeLogfObject(enc logf.FieldEncoder) error {
 
 // ---
 
-var (
-	_ slog.Handler = (*Handler)(nil)
-)
+var _ slog.Handler = (*Handler)(nil)

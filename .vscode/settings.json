@@ -1,0 +1,7 @@
+{
+    "go.formatTool": "gofumpt",
+    "gopls": {
+        "formatting.local": "github.com/pamburus",
+        "formatting.gofumpt": true
+    }
+}
